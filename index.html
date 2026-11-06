@@ -1,48 +1,681 @@
-# Inventaris Koleksi Foto Latihan
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tutorial Interaktif: Pseudo-class & Efek Transform (07-latihan)</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
-Seluruh foto tersimpan secara lokal di CWD (`.`).
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      background-color: #0f172a;
+      color: #f1f5f9;
+      overflow: hidden;
+    }
 
----
+    header.app-header {
+      padding: 10px 20px;
+      background: #1e293b;
+      border-bottom: 1px solid #334155;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-shrink: 0;
+    }
 
-## 1. Folder `images-varied/` (50 Foto - Beragam Resolusi & Aspek Rasio)
-> Cocok untuk latihan layout CSS Flexbox (menguji bagaimana layout menangani elemen dengan tinggi/lebar tidak beraturan) dan latihan Lazy Loading dengan dynamic heights.
+    header.app-header h1 {
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: #38bdf8;
+    }
 
-- **Jumlah:** 50 file (`photo-01-...` s/d `photo-50-...`)
-- **Total Ukuran:** ~2.47 MB
-- **Variasi Dimensi yang Digunakan:**
-  - Lanskap 3:2 (`1200 x 800`)
-  - Lanskap 4:3 (`800 x 600`)
-  - Lanskap 16:9 (`640 x 360`)
-  - Lanskap 8:5 (`400 x 250`)
-  - Potret 2:3 (`800 x 1200`)
-  - Potret 2:3 (`600 x 900`)
-  - Potret 4:7 (`400 x 700`)
-  - Potret 3:5 (`300 x 500`)
-  - Persegi 1:1 (`800 x 800`, `500 x 500`, `300 x 300`)
-  - Banner Panorama 3:1 (`1200 x 400`, `900 x 300`)
-  - Vertikal Banner (`350 x 900`)
-  - Thumbnail (`200 x 200`, `250 x 150`)
+    header.app-header p {
+      font-size: 0.8rem;
+      color: #94a3b8;
+    }
 
-### Sampel File `images-varied/`:
-- [photo-01-landscape-3x2-1200x800.jpg](./images-varied/photo-01-landscape-3x2-1200x800.jpg)
-- [photo-05-portrait-2x3-800x1200.jpg](./images-varied/photo-05-portrait-2x3-800x1200.jpg)
-- [photo-09-square-1x1-800x800.jpg](./images-varied/photo-09-square-1x1-800x800.jpg)
-- [photo-12-panorama-3x1-1200x400.jpg](./images-varied/photo-12-panorama-3x1-1200x400.jpg)
-- [photo-14-vertical-banner-350x900.jpg](./images-varied/photo-14-vertical-banner-350x900.jpg)
-- *(Total 50 file berturut-turut hingga [photo-50-square-1x1-500x500.jpg](./images-varied/photo-50-square-1x1-500x500.jpg))*
+    .split-layout {
+      flex: 1;
+      display: flex;
+      height: calc(100vh - 49px);
+    }
 
----
+    /* Panel Kiri (Editor & Kontrol) */
+    .editor-panel {
+      width: 50%;
+      border-right: 1px solid #334155;
+      display: flex;
+      flex-direction: column;
+      background: #0f172a;
+    }
 
-## 2. Folder `images-uniform/` (50 Foto - 1 Ukuran Seragam: 800x600)
-> Cocok untuk latihan Lazy Loading standar (grid rapi, infinite scroll, intersection observer) tanpa layout shift akibat perbedaan resolusi.
+    .controls-section {
+      padding: 10px 14px;
+      background: #1e293b;
+      border-bottom: 1px solid #334155;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      max-height: 60%;
+      overflow-y: auto;
+    }
 
-- **Jumlah:** 50 file (`uniform-01-800x600.jpg` s/d `uniform-50-800x600.jpg`)
-- **Resolusi Seragam:** `800 x 600` piksel (Aspek Rasio 4:3)
-- **Total Ukuran:** ~2.91 MB
+    .section-title {
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: #f59e0b;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-top: 4px;
+      margin-bottom: 2px;
+      border-bottom: 1px solid rgba(245, 158, 11, 0.2);
+      padding-bottom: 2px;
+    }
 
-### Sampel File `images-uniform/`:
-- [uniform-01-800x600.jpg](./images-uniform/uniform-01-800x600.jpg)
-- [uniform-02-800x600.jpg](./images-uniform/uniform-02-800x600.jpg)
-- [uniform-10-800x600.jpg](./images-uniform/uniform-10-800x600.jpg)
-- [uniform-25-800x600.jpg](./images-uniform/uniform-25-800x600.jpg)
-- [uniform-50-800x600.jpg](./images-uniform/uniform-50-800x600.jpg)
+    .control-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.76rem;
+    }
+
+    .control-label {
+      width: 155px;
+      color: #cbd5e1;
+      font-weight: 500;
+      flex-shrink: 0;
+    }
+
+    .control-inputs {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      flex-wrap: wrap;
+      flex: 1;
+    }
+
+    .manual-input {
+      background: #0f172a;
+      border: 1px solid #38bdf8;
+      color: #38bdf8;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 0.74rem;
+      font-family: monospace;
+      width: 120px;
+      outline: none;
+    }
+
+    .manual-input:focus {
+      box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.3);
+    }
+
+    .btn-group {
+      display: flex;
+      gap: 4px;
+      flex-wrap: wrap;
+    }
+
+    .btn-group button {
+      background: #334155;
+      color: #94a3b8;
+      border: 1px solid #475569;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 0.69rem;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .btn-group button:hover {
+      background: #475569;
+      color: #ffffff;
+    }
+
+    .btn-group button.active {
+      background: #0284c7;
+      color: #ffffff;
+      border-color: #38bdf8;
+      font-weight: 600;
+    }
+
+    /* Edu-tip Box */
+    .edu-tip {
+      background: rgba(245, 158, 11, 0.1);
+      border-left: 3px solid #f59e0b;
+      padding: 6px 10px;
+      font-size: 0.73rem;
+      color: #fed7aa;
+      line-height: 1.35;
+      border-radius: 0 4px 4px 0;
+      margin-top: 3px;
+    }
+
+    /* Area Kode */
+    .code-scroll-area {
+      flex: 1;
+      overflow-y: auto;
+      padding: 10px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .code-box {
+      background: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 6px;
+      overflow: hidden;
+    }
+
+    .code-header {
+      padding: 4px 10px;
+      background: #0f172a;
+      border-bottom: 1px solid #334155;
+      font-size: 0.68rem;
+      font-weight: 600;
+      color: #94a3b8;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    pre {
+      padding: 8px 10px;
+      font-family: Consolas, Monaco, monospace;
+      font-size: 0.75rem;
+      line-height: 1.35;
+      color: #e2e8f0;
+      white-space: pre-wrap;
+    }
+
+    .val-highlight {
+      background: rgba(56, 189, 248, 0.15);
+      color: #38bdf8;
+      padding: 1px 3px;
+      border-radius: 3px;
+      border-bottom: 1px solid #38bdf8;
+      font-weight: bold;
+    }
+
+    /* Panel Kanan (Live Preview) */
+    .preview-panel {
+      width: 50%;
+      background: #f8fafc;
+      color: #0f172a;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .preview-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 16px;
+      background: #e2e8f0;
+      border-bottom: 1px solid #cbd5e1;
+      font-size: 0.72rem;
+      flex-shrink: 0;
+    }
+
+    .preview-badge {
+      background: #0284c7;
+      color: white;
+      font-size: 0.68rem;
+      font-weight: 600;
+      padding: 2px 6px;
+      border-radius: 4px;
+      text-transform: uppercase;
+    }
+
+    .scroll-viewport {
+      flex: 1;
+      overflow-y: auto;
+      overflow-x: hidden;
+      padding: 20px 14px;
+      background-color: #f8fafc;
+    }
+
+    .target-flex-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      justify-content: center;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    /* Target Dynamic Card Style */
+    .target-card {
+      flex: 0 1 240px;
+      background-color: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      cursor: pointer;
+      position: relative;
+    }
+
+    .target-card img {
+      width: 100%;
+      height: 160px;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.3s ease;
+    }
+
+    .target-card p {
+      padding: 10px 12px;
+      font-size: 0.8rem;
+      line-height: 1.35;
+      color: #475569;
+      flex: 1;
+    }
+
+    /* Dynamic injected styles for live hover rule */
+    <style id="dynamic-hover-rules"></style>
+  </style>
+  <!-- Tempat inject CSS runtime untuk efek hover -->
+  <style id="runtime-hover-css"></style>
+</head>
+<body>
+
+  <header class="app-header">
+    <h1>Tutorial Interaktif: Pseudo-class :hover & Transform (07-latihan)</h1>
+    <p>Memahami Pseudo-class selector, fungsi transform, efek glow box-shadow, dan timing transition.</p>
+  </header>
+
+  <div class="split-layout">
+    <!-- PANEL KIRI (KONTROL & KODE) -->
+    <section class="editor-panel">
+      
+      <div class="controls-section">
+        
+        <!-- BAGIAN 1: PEMAHAMAN PSEUDO-CLASS & SIMULASI -->
+        <div class="section-title">1. Selector: Pseudo-class (:hover)</div>
+
+        <div class="control-row" style="background: rgba(56, 189, 248, 0.08); padding: 3px 4px; border-radius: 4px;">
+          <span class="control-label" style="color: #38bdf8;">Simulasi State :hover</span>
+          <div class="control-inputs">
+            <div class="btn-group" data-target="force-hover">
+              <button class="active" data-val="mouse">Kursor Mouse Nyata (Arahkan ke kartu)</button>
+              <button data-val="forced">Paksa :hover di Kartu Pertama (Tetap Aktif)</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- BAGIAN 2: TRANSFORM SAAT HOVER -->
+        <div class="section-title">2. Transformasi Bentuk (.card:hover { transform })</div>
+
+        <!-- transform translateY (Angkat kartu ke atas) -->
+        <div class="control-row">
+          <span class="control-label">translateY (Elevasi)</span>
+          <div class="control-inputs">
+            <input type="text" id="input-translate-y" class="manual-input" value="-4px">
+            <div class="btn-group" data-target="translate-y">
+              <button class="active" data-val="-4px">-4px (naik tipis)</button>
+              <button data-val="-10px">-10px (naik tinggi)</button>
+              <button data-val="0px">0px (tetap di tempat)</button>
+              <button data-val="4px">4px (turun/tertekan)</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- transform scale (Membesar) -->
+        <div class="control-row">
+          <span class="control-label">scale (Perbesaran)</span>
+          <div class="control-inputs">
+            <input type="text" id="input-scale" class="manual-input" value="1.03">
+            <div class="btn-group" data-target="scale">
+              <button class="active" data-val="1.03">1.03 (sedikit membesar)</button>
+              <button data-val="1.07">1.07 (jelas membesar)</button>
+              <button data-val="1.00">1.00 (tanpa zoom)</button>
+              <button data-val="0.96">0.96 (mengecil)</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- transform rotate (Kemiringan) -->
+        <div class="control-row">
+          <span class="control-label">rotate (Rotasi)</span>
+          <div class="control-inputs">
+            <input type="text" id="input-rotate" class="manual-input" value="0deg">
+            <div class="btn-group" data-target="rotate">
+              <button class="active" data-val="0deg">0deg (lurus)</button>
+              <button data-val="2deg">2deg (miring kanan)</button>
+              <button data-val="-2deg">-2deg (miring kiri)</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- BAGIAN 3: EFEK GLOW (BOX-SHADOW & BORDER) -->
+        <div class="section-title">3. Efek Visual: Glow Cahaya (.card:hover { box-shadow })</div>
+
+        <!-- preset box-shadow glow -->
+        <div class="control-row">
+          <span class="control-label">box-shadow (Glow)</span>
+          <div class="control-inputs">
+            <input type="text" id="input-box-shadow" class="manual-input" value="0 10px 24px rgba(249, 115, 22, 0.18), 0 0 14px rgba(251, 146, 60, 0.28)">
+            <div class="btn-group" data-target="box-shadow">
+              <button class="active" data-val="0 10px 24px rgba(249, 115, 22, 0.18), 0 0 14px rgba(251, 146, 60, 0.28)">Glow Oranye Tipis (Default 07)</button>
+              <button data-val="0 0 25px rgba(249, 115, 22, 0.6), 0 0 45px rgba(249, 115, 22, 0.3)">Neon Oranye Kuat</button>
+              <button data-val="0 12px 28px rgba(14, 165, 233, 0.25), 0 0 18px rgba(56, 189, 248, 0.35)">Glow Biru Cyan</button>
+              <button data-val="0 16px 32px rgba(0, 0, 0, 0.18)">Bayangan Natural Gelap</button>
+              <button data-val="none">none (Tanpa Bayangan)</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- border-color hover -->
+        <div class="control-row">
+          <span class="control-label">border-color (Hover)</span>
+          <div class="control-inputs">
+            <input type="text" id="input-border-color" class="manual-input" value="rgba(249, 115, 22, 0.4)">
+            <div class="btn-group" data-target="border-color">
+              <button class="active" data-val="rgba(249, 115, 22, 0.4)">Oranye Transparan</button>
+              <button data-val="#f97316">Oranye Pekat (#f97316)</button>
+              <button data-val="#38bdf8">Biru Muda (#38bdf8)</button>
+              <button data-val="#e2e8f0">Abu-abu Tetap</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- BAGIAN 4: KEHALUSAN TRANSISI (TRANSITION) -->
+        <div class="section-title">4. Kehalusan Animasi: transition (Diatur pada Induk .card)</div>
+
+        <!-- transition-duration -->
+        <div class="control-row">
+          <span class="control-label">transition-duration</span>
+          <div class="control-inputs">
+            <input type="text" id="input-transition-duration" class="manual-input" value="0.25s">
+            <div class="btn-group" data-target="transition-duration">
+              <button class="active" data-val="0.25s">0.25s (ideal)</button>
+              <button data-val="0.1s">0.1s (sangat cepat)</button>
+              <button data-val="0.6s">0.6s (lambat & anggun)</button>
+              <button data-val="0s">0s (kaget/tanpa animasi!)</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- transition-timing-function -->
+        <div class="control-row">
+          <span class="control-label">timing-function</span>
+          <div class="control-inputs">
+            <input type="text" id="input-timing-fn" class="manual-input" value="ease">
+            <div class="btn-group" data-target="timing-fn">
+              <button class="active" data-val="ease">ease</button>
+              <button data-val="ease-out">ease-out</button>
+              <button data-val="linear">linear</button>
+              <button data-val="cubic-bezier(0.34, 1.56, 0.64, 1)">spring/bounce (membal)</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Penjelasan Edukasi -->
+        <div id="edu-tip" class="edu-tip">
+          <strong>Apa itu Pseudo-class?</strong> Di CSS, <code>:hover</code> adalah <em>pseudo-class selector</em> (ditulis dengan satu titik dua <code>:</code>). Ia aktif secara dinamis saat kursor pengguna berada di atas elemen, tanpa perlu mengubah HTML atau menulis JavaScript!
+        </div>
+
+      </div>
+
+      <!-- AREA PREVIEW KODE CSS -->
+      <div class="code-scroll-area">
+        <div class="code-box">
+          <div class="code-header">CSS Terapan (Realtime Update)</div>
+          <pre id="css-preview">
+<span style="color: #94a3b8;">/* 1. Kondisi Awal: Wajib pasang transition di sini agar animasi pulang-pergi halus */</span>
+<span style="color: #f59e0b;">.card</span> {
+  cursor: pointer;
+  border: 1px solid #e2e8f0;
+  transition: transform <span id="css-val-dur1" class="val-highlight">0.25s</span> <span id="css-val-tf1" class="val-highlight">ease</span>,
+              box-shadow <span id="css-val-dur2" class="val-highlight">0.25s</span> <span id="css-val-tf2" class="val-highlight">ease</span>,
+              border-color <span id="css-val-dur3" class="val-highlight">0.25s</span> <span id="css-val-tf3" class="val-highlight">ease</span>;
+}
+
+<span style="color: #94a3b8;">/* 2. Pseudo-class :hover (Aktif seketika saat pointer mouse melayang di atas .card) */</span>
+<span style="color: #f59e0b;">.card:hover</span> {
+  transform: <span id="css-val-transform" class="val-highlight">translateY(-4px) scale(1.03)</span>;
+  border-color: <span id="css-val-border-color" class="val-highlight">rgba(249, 115, 22, 0.4)</span>;
+  box-shadow: <span id="css-val-box-shadow" class="val-highlight">0 10px 24px rgba(249, 115, 22, 0.18), 0 0 14px rgba(251, 146, 60, 0.28)</span>;
+}</pre>
+        </div>
+
+        <div class="code-box">
+          <div class="code-header">Kamus Istilah: Pseudo-class vs Pseudo-element</div>
+          <pre style="font-size: 0.72rem; color: #cbd5e1;">
+• <b>Pseudo-class (Satu titik dua :)</b>: Memilih elemen berdasarkan <i>status interaksi</i> atau kondisi sementara.
+  Contoh: <code>:hover</code> (melayang), <code>:focus</code> (saat diklik form), <code>:active</code> (saat dipencet), <code>:nth-child()</code>.
+
+• <b>Pseudo-element (Dua titik dua ::)</b>: Membuat atau memilih <i>bagian sub-elemen tiruan</i> di dalam elemen.
+  Contoh: <code>::before</code> (konten sisipan awal), <code>::after</code> (konten sisipan akhir), <code>::placeholder</code>.
+
+• <b>Transform vs Transition</b>:
+  - <code>transform</code> adalah bentuk perubahannya (geser, putar, perbesar).
+  - <code>transition</code> adalah jembatan waktunya (durasi & keluwesan gerakan dari titik A ke titik B).</pre>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- PANEL KANAN (PREVIEW AKTIF HOVER) -->
+    <section class="preview-panel">
+      
+      <div class="preview-bar">
+        <span class="preview-badge">Live Hover Preview</span>
+        <span style="color: #64748b; font-size: 0.72rem;">&uArr; Arahkan kursor ke kartu mana pun di bawah ini untuk melihat efeknya!</span>
+      </div>
+
+      <div class="scroll-viewport">
+        <div class="target-flex-container">
+          
+          <div class="target-card" id="card-1">
+            <img src="images-uniform/uniform-01-800x600.jpg" alt="Seseorang memegang kamera digital retro Fujifilm X100 silver">
+            <p>Seseorang memegang kamera digital retro Fujifilm X100 silver dengan strap kulit tergantung di leher</p>
+          </div>
+
+          <div class="target-card">
+            <img src="images-uniform/uniform-05-800x600.jpg" alt="Depo stasiun perkeretaapian barang saat matahari terbit keemasan">
+            <p>Depo stasiun perkeretaapian barang dengan puluhan jalur rel dan gerbong tangki saat matahari terbit keemasan</p>
+          </div>
+
+          <div class="target-card">
+            <img src="images-uniform/uniform-11-800x600.jpg" alt="Dermaga kayu panjang menjorok ke danau pegunungan berair jernih">
+            <p>Dermaga kayu panjang menjorok ke danau pegunungan berair jernih dengan latar hutan pinus dan pegunungan Alpen</p>
+          </div>
+
+          <div class="target-card">
+            <img src="images-uniform/uniform-14-800x600.jpg" alt="Gulungan jerami gandum silinder di ladang pertanian berkabut">
+            <p>Gulungan jerami gandum (hay bales) silinder di ladang pertanian berkabut tebal di pagi hari</p>
+          </div>
+
+          <div class="target-card">
+            <img src="images-uniform/uniform-22-800x600.jpg" alt="Puncak gunung Matterhorn bersalju megah">
+            <p>Puncak gunung Matterhorn bersalju megah dengan awan putih melingkar di sekeliling puncaknya</p>
+          </div>
+
+          <div class="target-card">
+            <img src="images-uniform/uniform-26-800x600.jpg" alt="Induk beruang cokelat grizzly berjalan bersama dua anaknya">
+            <p>Induk beruang cokelat grizzly berjalan bersama dua anak beruangnya di punggung bukit berbatu bersalju</p>
+          </div>
+
+          <div class="target-card">
+            <img src="images-uniform/uniform-32-800x600.jpg" alt="Haluan perahu kano kayu dengan dayung bersandar di tepi danau">
+            <p>Haluan perahu kano kayu dengan dayung bersandar di antara dedaunan hijau di tepi danau berkilau</p>
+          </div>
+
+          <div class="target-card">
+            <img src="images-uniform/uniform-42-800x600.jpg" alt="Bintang jatuh meluncur melintasi galaksi Bima Sakti">
+            <p>Bintang jatuh (meteor) meluncur melintasi galaksi Bima Sakti di langit malam berbintang biru tua pekat</p>
+          </div>
+
+          <div class="target-card">
+            <img src="images-uniform/uniform-02-800x600.jpg" alt="Rel kereta api tepi pantai memanjang lurus">
+            <p>Rel kereta api tepi pantai memanjang lurus dengan deburan ombak laut biru di sebelahnya</p>
+          </div>
+
+          <div class="target-card">
+            <img src="images-uniform/uniform-09-800x600.jpg" alt="Kincir angin turbin listrik di atas perbukitan hijau">
+            <p>Kincir angin turbin listrik penghasil energi ramah lingkungan di atas perbukitan hijau cerah</p>
+          </div>
+
+          <div class="target-card">
+            <img src="images-uniform/uniform-13-800x600.jpg" alt="Papan selancar tergeletak di pasir pantai saat sunset">
+            <p>Papan selancar kayu tergeletak santai di atas pasir pantai dengan siluet mentari terbenam</p>
+          </div>
+
+          <div class="target-card">
+            <img src="images-uniform/uniform-36-800x600.jpg" alt="Pemandian air panas Blue Lagoon Islandia dengan uap mengepul">
+            <p>Pemandian air panas geotermal Blue Lagoon Islandia dengan air biru susu dan uap putih mengepul</p>
+          </div>
+
+        </div>
+      </div>
+
+    </section>
+  </div>
+
+  <script>
+    // State Aplikasi
+    const state = {
+      forceHover: 'mouse',
+      translateY: '-4px',
+      scale: '1.03',
+      rotate: '0deg',
+      boxShadow: '0 10px 24px rgba(249, 115, 22, 0.18), 0 0 14px rgba(251, 146, 60, 0.28)',
+      borderColor: 'rgba(249, 115, 22, 0.4)',
+      duration: '0.25s',
+      timingFn: 'ease'
+    };
+
+    const runtimeStyle = document.getElementById('runtime-hover-css');
+    const card1 = document.getElementById('card-1');
+
+    function buildTransformString() {
+      const parts = [];
+      if (state.translateY && state.translateY !== '0px') {
+        parts.push(`translateY(${state.translateY})`);
+      }
+      if (state.scale && state.scale !== '1' && state.scale !== '1.00') {
+        parts.push(`scale(${state.scale})`);
+      }
+      if (state.rotate && state.rotate !== '0deg') {
+        parts.push(`rotate(${state.rotate})`);
+      }
+      return parts.length > 0 ? parts.join(' ') : 'none';
+    }
+
+    function applyStyles() {
+      const transformStr = buildTransformString();
+
+      // Buat rule CSS runtime untuk .target-card dan .target-card:hover
+      const cssRules = `
+        .target-card {
+          transition: transform ${state.duration} ${state.timingFn},
+                      box-shadow ${state.duration} ${state.timingFn},
+                      border-color ${state.duration} ${state.timingFn} !important;
+        }
+
+        .target-card:hover {
+          transform: ${transformStr} !important;
+          box-shadow: ${state.boxShadow} !important;
+          border-color: ${state.borderColor} !important;
+          z-index: 10;
+        }
+
+        .forced-hover {
+          transform: ${transformStr} !important;
+          box-shadow: ${state.boxShadow} !important;
+          border-color: ${state.borderColor} !important;
+          z-index: 10;
+        }
+      `;
+
+      runtimeStyle.textContent = cssRules;
+
+      // Handle opsi simulasi Force Hover pada kartu pertama
+      if (state.forceHover === 'forced') {
+        card1.classList.add('forced-hover');
+      } else {
+        card1.classList.remove('forced-hover');
+      }
+
+      // Update Teks Panel Kode CSS
+      document.getElementById('css-val-dur1').textContent = state.duration;
+      document.getElementById('css-val-dur2').textContent = state.duration;
+      document.getElementById('css-val-dur3').textContent = state.duration;
+      document.getElementById('css-val-tf1').textContent = state.timingFn;
+      document.getElementById('css-val-tf2').textContent = state.timingFn;
+      document.getElementById('css-val-tf3').textContent = state.timingFn;
+
+      document.getElementById('css-val-transform').textContent = transformStr;
+      document.getElementById('css-val-border-color').textContent = state.borderColor;
+      document.getElementById('css-val-box-shadow').textContent = state.boxShadow;
+    }
+
+    // Hubungkan kontrol input manual dan tombol preset
+    const controls = [
+      { key: 'force-hover', inputId: null, stateProp: 'forceHover' },
+      { key: 'translate-y', inputId: 'input-translate-y', stateProp: 'translateY' },
+      { key: 'scale', inputId: 'input-scale', stateProp: 'scale' },
+      { key: 'rotate', inputId: 'input-rotate', stateProp: 'rotate' },
+      { key: 'box-shadow', inputId: 'input-box-shadow', stateProp: 'boxShadow' },
+      { key: 'border-color', inputId: 'input-border-color', stateProp: 'borderColor' },
+      { key: 'transition-duration', inputId: 'input-transition-duration', stateProp: 'duration' },
+      { key: 'timing-fn', inputId: 'input-timing-fn', stateProp: 'timingFn' }
+    ];
+
+    controls.forEach(({ key, inputId, stateProp }) => {
+      const inputEl = inputId ? document.getElementById(inputId) : null;
+      const btnGroup = document.querySelector(`.btn-group[data-target="${key}"]`);
+
+      // Ketik manual pada input
+      if (inputEl) {
+        inputEl.addEventListener('input', (e) => {
+          const val = e.target.value.trim();
+          state[stateProp] = val;
+
+          if (btnGroup) {
+            const btns = btnGroup.querySelectorAll('button');
+            btns.forEach(btn => {
+              if (btn.getAttribute('data-val') === val) {
+                btn.classList.add('active');
+              } else {
+                btn.classList.remove('active');
+              }
+            });
+          }
+          applyStyles();
+        });
+      }
+
+      // Klik tombol preset
+      if (btnGroup) {
+        const btns = btnGroup.querySelectorAll('button');
+        btns.forEach(btn => {
+          btn.addEventListener('click', () => {
+            btns.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            const val = btn.getAttribute('data-val');
+            if (inputEl) inputEl.value = val;
+            state[stateProp] = val;
+            applyStyles();
+          });
+        });
+      }
+    });
+
+    // Inisialisasi awal
+    applyStyles();
+  </script>
+</body>
+</html>
