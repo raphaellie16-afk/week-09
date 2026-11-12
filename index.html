@@ -177,6 +177,52 @@
       line-height: 1.4;
       color: #1471f3;
     }
+
+ main {
+      flex: 1;
+      padding: 24px 16px;
+    }
+
+    .flex-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      justify-content: center;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .cardq {
+      flex: 0 1 600px;
+      background-color: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      cursor: pointer;
+      transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+    }
+
+    .cardq:hover {
+      transform: translateY(-4px) scale(1.03);
+      border-color: rgba(15, 41, 238, 0.4);
+      box-shadow: 0 10px 24px rgba(128, 0, 128, 0.18), 0 0 14px rgba(251, 146, 60, 0.28);
+    }
+
+    .cardq img {
+      width: 100%;
+      height: auto;
+      object-fit: cover;
+      display: block;
+    }
+
+    .cardq p {
+      padding: 12px 14px;
+      font-size: 0.85rem;
+      line-height: 1.4;
+      color: #1471f3;
+    }
   </style>
 </head>
 <body>
@@ -222,6 +268,16 @@
         <p>desain 3d model r25 v2,zx 25, dan cbr 250rr dalam kondisi trondol(liaran style) yang di buat menggunakan blender </p>
       </div>
       
+      <div class="cardq">
+        <img src="gambar/12.png" alt="foto motor alphaworks">
+        <p>foto zx25r,r25v2 body balap,ninja ss,bmw s1k, dan r25v2 milik bengkel alphaworks yang saya potret saat ada pamera di pameran imx</p>
+      </div>
+      
+<div class="cardq">
+        <img src="gambar/3.png" alt="foto z900 new">
+        <p>foto z900 new yang saya potret saat mendapatkan job sebagai videographer untuk rolling shot </p>
+      </div>
+
     </div>
   </main>
 
