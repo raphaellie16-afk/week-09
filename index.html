@@ -132,6 +132,51 @@
       line-height: 1.4;
       color: #1471f3;
     }
+      main {
+      flex: 1;
+      padding: 24px 16px;
+    }
+
+    .flex-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      justify-content: center;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .cardl {
+      flex: 0 1 1200px;
+      background-color: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      cursor: pointer;
+      transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+    }
+
+    .cardl:hover {
+      transform: translateY(-4px) scale(1.03);
+      border-color: rgba(15, 41, 238, 0.4);
+      box-shadow: 0 10px 24px rgba(128, 0, 128, 0.18), 0 0 14px rgba(251, 146, 60, 0.28);
+    }
+
+    .cardl img {
+      width: 100%;
+      height: 190px;
+      object-fit: cover;
+      display: block;
+    }
+
+    .cardl p {
+      padding: 12px 14px;
+      font-size: 0.85rem;
+      line-height: 1.4;
+      color: #1471f3;
+    }
   </style>
 </head>
 <body>
@@ -153,12 +198,12 @@
       </div>
 
       <div class="card">
-        <img src="gambar/esbeer.png" alt="Waktu yang tidak bisa dihentikan">
+        <img src="gambar/esbeer.png" alt="desain livery cbr 250rr x redbull">
         <p>desain livery cbr250rr x redbull yang di buat menggunakan adobe illustrator dengan desain minimalis</p>
       </div>
 
         <div class="cardw">
-        <img src="gambar/esbeer.png" alt="Waktu yang tidak bisa dihentikan">
+        <img src="gambar/esbeer.png" alt="desain livery r15 body balap">
         <p>desain livery cbr250rr x redbull yang di buat menggunakan adobe illustrator dengan desain minimalis</p>
       </div>
 
